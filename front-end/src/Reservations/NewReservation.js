@@ -11,6 +11,7 @@ function Reservations() {
     mobile_number: "",
     reservation_date: "",
     reservation_time: "",
+    people: 0
   };
 
   const [formData, setFormData] = useState(defaultFormData);
@@ -36,6 +37,10 @@ function Reservations() {
           console.error(response.body);
         }
       })
+      .catch((error) => {
+        console.error(error);
+        setError(error);
+      });
 
     return () => abortController.abort();
   }
@@ -76,6 +81,18 @@ function Reservations() {
               required
             />
           </InputGroup>
+        </Form.Group>
+
+        <Form.Group controlId="formPeople">
+          <Form.Label>People</Form.Label>
+          <Form.Control
+            name="people"
+            type="number"
+            min="1"
+            onChange={onChange}
+            value={formData.people}
+            required
+          />
         </Form.Group>
 
         <Form.Row>
