@@ -80,10 +80,19 @@ function verifyPeople(req, res, next) {
 /**
  * List handler for reservation resources
  */
-async function list(req, res) {
-  res.json({
-    data: [],
-  });
+async function list(req, res, next) {
+  const date = req.query.date;
+  try {
+    const data = await service.list(date);
+    
+    res.json({ data });
+  } catch (error) {
+    console.error(error);
+    next({
+      status: 500,
+      message: error.error
+    });
+  }
 }
 
 /**

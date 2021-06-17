@@ -15,26 +15,34 @@ function Reservations() {
   };
 
   const [formData, setFormData] = useState(defaultFormData);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const history = useHistory();
 
   const onChange = ({ target }) => {
+    if (target.name === "people") {
+      target.value = Number(target.value);
+    }
     setFormData({
       ...formData,
       [target.name]: target.value
     });
+
   }
 
   const onSubmit = (e) => {
     e.preventDefault();
     const abortController = new AbortController();
 
-    createReservation(formData, abortController.signal)
+    const data = formData;
+    data.people = Number(data.people);
+    
+    createReservation(data, abortController.signal)
       .then(response => {
         if (response.ok) {
           history.push(`/dashboard?date=${formData.reservation_date}`);
         } else {
           console.error(response.body);
+          setError(response.body.error);
         }
       })
       .catch((error) => {

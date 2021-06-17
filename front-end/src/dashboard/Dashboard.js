@@ -23,7 +23,11 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
-  
+  const reservationsComponents = reservations.map((res) => {
+    return (
+      <p>{res.first_name} {res.last_name}</p>
+    )
+  })
 
   return (
     <main>
@@ -32,7 +36,7 @@ function Dashboard({ date }) {
         <h4 className="mb-0">Reservations for date</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
+      {reservationsComponents}
     </main>
   );
 }
