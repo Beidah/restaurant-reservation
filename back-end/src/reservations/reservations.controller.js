@@ -65,13 +65,51 @@ function validateDate(req, res, next) {
       message: `Only future reservations dates are allowed.`
     });
   }
-
-  console.log(date, reservation_date);
+  
   if (date.getDay() === 1) {
     return next({
       status: 400,
       message: `Cannot make a reservation for Tuesday because the restaurant is closed.`
     })
+  }
+
+  return next();
+}
+
+function validateTime(req, res, next) {
+  const { reservation_date, reservation_time } = res.locals.data;
+  const date = new Date(reservation_date + " " + reservation_time);
+  const today = new Date();
+
+  if (date < today) {
+    return next({
+      status: 400,
+      message: "Only future reservations times are allowed."
+    });
+  }
+
+  const [hours, minutes] = reservation_time.split(":", 2);
+  const res_time = new Date();
+  res_time.setHours(Number(hours), Number(minutes));
+
+  const openTime = new Date();
+  openTime.setHours(10, 30, 0);
+
+  if (res_time < openTime) {
+    return next({
+      status: 400,
+      message: `The earliest reservation time is 10:30. Received: ${reservation_time}`
+    });
+  }
+
+  const closeTime = new Date();
+  closeTime.setHours(21, 30, 0);
+
+  if (res_time > closeTime) {
+    return next({
+      status: 400,
+      message: `The latest reservation time is 21:30. Received: ${reservation_time}`
+    });
   }
 
   return next();
@@ -137,5 +175,5 @@ async function create(req, res, next) {
 
 module.exports = {
   list,
-  create: [hasProperties, verifyDate, validateDate, verifyTime, verifyPeople, asyncErrorBoundary(create)],
+  create: [hasProperties, verifyDate, validateDate, verifyTime, validateTime, verifyPeople, asyncErrorBoundary(create)],
 };
