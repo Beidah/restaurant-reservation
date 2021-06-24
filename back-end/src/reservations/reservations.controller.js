@@ -54,6 +54,29 @@ function verifyTime(req, res, next) {
   return next();
 }
 
+function validateDate(req, res, next) {
+  const { reservation_date } = res.locals.data;
+  const date = new Date(reservation_date);
+  const today = new Date();
+
+  if (date < today) {
+    return next({
+      status: 400,
+      message: `Only future reservations dates are allowed.`
+    });
+  }
+
+  console.log(date, reservation_date);
+  if (date.getDay() === 1) {
+    return next({
+      status: 400,
+      message: `Cannot make a reservation for Tuesday because the restaurant is closed.`
+    })
+  }
+
+  return next();
+}
+
 function verifyPeople(req, res, next) {
   const people = res.locals.data.people;
 
@@ -114,5 +137,5 @@ async function create(req, res, next) {
 
 module.exports = {
   list,
-  create: [hasProperties, verifyDate, verifyTime, verifyPeople, asyncErrorBoundary(create)],
+  create: [hasProperties, verifyDate, validateDate, verifyTime, verifyPeople, asyncErrorBoundary(create)],
 };
