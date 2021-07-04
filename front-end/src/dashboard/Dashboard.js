@@ -49,21 +49,23 @@ function Dashboard() {
 
   return (
     <main>
-      <h1>Dashboard</h1>
-      <h4 className="mb-0">Reservations for date: {date}</h4>
-      <div className="restaurant-list mb-3">
-        <ErrorAlert error={reservationsError} />
-        {reservationsComponents}
+      <div className="container">
+        <h1>Dashboard</h1>
+        <h4 className="mb-0">Reservations for date: {date}</h4>
+        <div className="restaurant-list row mb-3">
+          <ErrorAlert error={reservationsError} />
+          {reservationsComponents}
+        </div>
         <div className="buttons mt-3">
           <a className="btn btn-primary mr-3" href={`/dashboard?date=${previous(date)}`}>Previous</a>
           <a className="btn btn-primary mr-3" href={`/dashboard?date=${next(date)}`}>Next</a>
           <a className="btn btn-primary" href={`/dashboard?date=${today()}`}>Today</a>
         </div>
-      </div>
-      <h4>Tables</h4>
-      <ErrorAlert error={tableError} />
-      <div className="d-md-flex table-list justify-content-around">
-        {tableComponents}
+        <h4>Tables</h4>
+        <ErrorAlert error={tableError} />
+        <div className="row table-list ">
+          {tableComponents}
+        </div>
       </div>
     </main>
   );

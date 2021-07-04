@@ -159,7 +159,7 @@ async function seat(req, res) {
 function free(req, res, next) {
   service
     .free(res.locals.table_id)
-    .then(() => res.sendStatus(200))
+    .then((data) => res.json({ data }))
     .catch(next);
 }
 

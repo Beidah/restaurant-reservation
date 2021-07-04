@@ -13,7 +13,7 @@ function TableCard({ table, setError }) {
   }
 
   return (
-    <div className="card table-card pl-2 pr-2" style={{minWidth: "20%"}} >
+    <div className="card table-card pl-2 pr-2 col-3 m-3" style={{minWidth: "20%"}} >
       <div className="card-header">
           <h5 className="card-title">{table.table_name}</h5>
       </div>
