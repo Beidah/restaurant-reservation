@@ -21,21 +21,39 @@ async function create(newTable) {
 }
 
 async function seat(table_id, reservation_id) {
-  return knex(tableName)
+  return knex.transaction((trx) => { 
+    return trx.table(tableName)
     .where({ table_id })
     .update({
       reservation_id,
       free: false,
-    }, ["*"]);
+    }, ["*"])
+    .then((ids) => {
+      return trx.table("reservations")
+        .where({ reservation_id })
+        .update({ status: "seated" });
+    })});
 }
 
 async function free(table_id) {
-  return knex(tableName)
+  const { reservation_id } = await knex(tableName)
     .where({ table_id })
-    .update({
-      reservation_id: null,
-      free: true
-    });
+    .select("reservation_id")
+    .first();
+
+  return knex.transaction((trx) => {
+    return trx.table(tableName)
+      .where({ table_id })
+      .update({
+        reservation_id: null,
+        free: true
+      })
+      .then(() => {
+        return trx.table("reservations")
+          .where({ reservation_id })
+          .update({ status: "finished" });
+      });
+  });
 }
 
 module.exports = {
