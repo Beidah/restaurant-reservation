@@ -5,6 +5,10 @@ function list() {
   return knex(tableName).select("*").orderBy("table_name");
 }
 
+function read(table_id) {
+  return knex(tableName).select("*").where({ table_id }).first();
+}
+
 async function create(newTable) {
   try {
     const createdRecords = await knex(tableName)
@@ -16,7 +20,18 @@ async function create(newTable) {
   }
 }
 
+async function seat(table_id, reservation_id) {
+  return knex(tableName)
+    .where({ table_id })
+    .update({
+      reservation_id,
+      free: false,
+    }, ["*"]);
+}
+
 module.exports = {
   list,
-  create
+  read,
+  create,
+  seat
 }
