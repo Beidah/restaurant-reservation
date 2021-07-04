@@ -3,6 +3,7 @@ import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 // eslint-disable-next-line
 import { next, previous, today } from "../utils/date-time";
+import TableCard from "../table/TableCard";
 
 /**
  * Defines the dashboard page.
@@ -44,33 +45,24 @@ function Dashboard() {
     );
   });
 
-  const tableComponents = tables.map((table, key) => {
-    const status = table.free ? "Free" : "Occupied";
-    return (
-      <div className="card pl-5 pr-5" key={key} >
-        <div className="card-body">
-          <h5 className="card-title">{table.table_name}</h5>
-          <p className="card-text">Capacity: {table.capacity}</p>
-          <p className="card-text">Status: <span data-table-id-status={table.table_id}>{status}</span></p>
-        </div>
-      </div>
-    )
-  })
+  const tableComponents = tables.map((table) => <TableCard key={table.table_id} table={table} setError={setTableError} /> );
 
   return (
     <main>
       <h1>Dashboard</h1>
       <h4 className="mb-0">Reservations for date: {date}</h4>
-      <div className="d-md-flex mb-3">
+      <div className="restaurant-list mb-3">
         <ErrorAlert error={reservationsError} />
         {reservationsComponents}
-        <a className="btn btn-primary mr-3" href={`/dashboard?date=${previous(date)}`}>Previous</a>
-        <a className="btn btn-primary mr-3" href={`/dashboard?date=${next(date)}`}>Next</a>
-        <a className="btn btn-primary" href={`/dashboard?date=${today()}`}>Today</a>
+        <div className="buttons mt-3">
+          <a className="btn btn-primary mr-3" href={`/dashboard?date=${previous(date)}`}>Previous</a>
+          <a className="btn btn-primary mr-3" href={`/dashboard?date=${next(date)}`}>Next</a>
+          <a className="btn btn-primary" href={`/dashboard?date=${today()}`}>Today</a>
+        </div>
       </div>
       <h4>Tables</h4>
-      <div className="d-md-flex justify-content-around">
-        <ErrorAlert error={tableError} />
+      <ErrorAlert error={tableError} />
+      <div className="d-md-flex table-list justify-content-around">
         {tableComponents}
       </div>
     </main>
