@@ -97,6 +97,19 @@ function tableIsFree(req, res, next) {
   next();
 }
 
+function tableIsOccupied(req, res, next) {
+  const { table } = res.locals;
+
+  if (table.free) {
+    return next({
+      status: 400,
+      message: `Table ${table.table_id} is not occupied`
+    });
+  }
+
+  next();
+}
+
 function tableHasCapacity(req, res, next) {
   const { table, reservation } = res.locals;
 
@@ -140,8 +153,14 @@ async function seat(req, res) {
   const { table_id, reservation_id } = res.locals;
   
   const data = await service.seat(table_id, reservation_id);
-  console.log(data);
   return res.status(200).json({ data });
+}
+
+function free(req, res, next) {
+  service
+    .free(res.locals.table_id)
+    .then(() => res.sendStatus(200))
+    .catch(next);
 }
 
 module.exports = {
@@ -154,5 +173,6 @@ module.exports = {
     tableIsFree,
     tableHasCapacity,
     asyncErrorBoundary(seat)
-  ]
+  ],
+  free: [asyncErrorBoundary(tableExists), tableIsOccupied, free]
 }

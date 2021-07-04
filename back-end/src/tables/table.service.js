@@ -29,9 +29,19 @@ async function seat(table_id, reservation_id) {
     }, ["*"]);
 }
 
+async function free(table_id) {
+  return knex(tableName)
+    .where({ table_id })
+    .update({
+      reservation_id: null,
+      free: true
+    });
+}
+
 module.exports = {
   list,
   read,
   create,
-  seat
+  seat,
+  free
 }
