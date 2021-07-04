@@ -4,6 +4,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 // eslint-disable-next-line
 import { next, previous, today } from "../utils/date-time";
 import TableCard from "../table/TableCard";
+import ReservationCard from "../Reservations/ReservationCard";
 
 /**
  * Defines the dashboard page.
@@ -33,17 +34,7 @@ function Dashboard() {
     return () => abortController.abort();
   }
 
-  const reservationsComponents = reservations.map((res, key) => {
-    return (
-      <div className="reservation card" key={key}>
-        <div className="card-body">
-          <h5 className="card-title">{res.first_name} {res.last_name}</h5>
-          <p className="card-text">Reservation for {res.people} at {res.reservation_time}</p>
-          <a className="btn" href={`/reservations/${res.reservation_id}/seat`}>Seat</a>
-        </div>
-      </div>
-    );
-  });
+  const reservationsComponents = reservations.map((res, key) => <ReservationCard reservation={res} key={res.reservation_id} /> );
 
   const tableComponents = tables.map((table) => <TableCard key={table.table_id} table={table} setError={setTableError} /> );
 
