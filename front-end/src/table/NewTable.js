@@ -15,14 +15,7 @@ function NewTable() {
     event.preventDefault();
 
     createTable(formData)
-      .then(response => {
-        if (response.ok) {
-          history.push("/dashboard");
-        } else {
-          console.error(response.error);
-          setError(response.body.error);
-        }
-      })
+      .then(() => history.push("/dashboard"))
       .catch(setError);
   }
 

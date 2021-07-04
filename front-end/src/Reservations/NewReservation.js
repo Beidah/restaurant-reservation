@@ -37,18 +37,8 @@ function Reservations() {
     data.people = Number(data.people);
     
     createReservation(data, abortController.signal)
-      .then(response => {
-        if (response.ok) {
-          history.push(`/dashboard?date=${formData.reservation_date}`);
-        } else {
-          console.error(response.body);
-          setError(response.body.error);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        setError(error);
-      });
+      .then(() => history.push(`/dashboard?date=${formData.reservation_date}`))
+      .catch((error) => setError(error));
 
     return () => abortController.abort();
   }

@@ -100,3 +100,15 @@ export async function createTable(newTable, signal) {
   };
   return await fetchJson(url, options, []);
 }
+
+export async function seatTable(reservation_id, table_id, signal) {
+  const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
+  const body = JSON.stringify({ data: { reservation_id } });
+  const options = {
+    method: "PUT",
+    headers,
+    body,
+    signal
+  };
+  return await fetchJson(url, options, []);
+}
