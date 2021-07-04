@@ -136,6 +136,22 @@ function verifyPeople(req, res, next) {
   return next();
 }
 
+async function reservationExists(req, res, next) {
+  const { reservation_id } = req.params;
+
+  const reservation = await service.read(reservation_id);
+
+  if (!reservation) {
+    return next({
+      status: 404,
+      message: `Reservation ${reservation_id} does not exist`
+    });
+  }
+
+  res.locals.reservation = reservation;
+  return next();
+}
+
 // Route handlers
 
 /**
@@ -143,17 +159,9 @@ function verifyPeople(req, res, next) {
  */
 async function list(req, res, next) {
   const date = req.query.date;
-  try {
-    const data = await service.list(date);
+  const data = await service.list(date);
     
-    res.json({ data });
-  } catch (error) {
-    console.error(error);
-    next({
-      status: 500,
-      message: error.error
-    });
-  }
+  res.json({ data });
 }
 
 /**
@@ -170,10 +178,15 @@ async function create(req, res, next) {
       message: error.error
     });
   }
+}
 
+function read(req, res) {
+  const data = res.locals.reservation;
+  res.json({data})
 }
 
 module.exports = {
   list,
+  read: [asyncErrorBoundary(reservationExists), read],
   create: [hasProperties, verifyDate, validateDate, verifyTime, validateTime, verifyPeople, asyncErrorBoundary(create)],
 };

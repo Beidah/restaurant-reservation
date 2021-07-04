@@ -25,7 +25,7 @@ function hasProperties(req, res, next) {
   }
 
   res.locals.data = data;
-  return next();
+  next();
 }
 
 function hasReservationId(req, res, next) {
@@ -48,59 +48,43 @@ function hasReservationId(req, res, next) {
   }
 
   res.locals.reservation_id = reservation_id;
-  return next();
+  next();
 }
 
 async function reservationExists(req, res, next) {
   const reservationService = require("../reservations/reservations.service");
 
-  try {
-    const reservation = await reservationService.read(res.locals.reservation_id);
+  const reservation = await reservationService.read(res.locals.reservation_id);
 
-    if (!reservation) {
-      return next({
-        status: 404,
-        message: `Reservation ${res.locals.reservation_id} not found`
-      });
-    }
-
-    res.locals.reservation = reservation;
-    return next();
-  } catch (message) {
-    console.error(message);
+  if (!reservation) {
     return next({
-      status: 500,
-      message
+      status: 404,
+      message: `Reservation ${res.locals.reservation_id} not found`
     });
   }
+
+  res.locals.reservation = reservation;
+  next();
 }
 
 async function tableExists(req, res, next) {
   const { table_id } = req.params;
 
-  try {
-    const table = await service.read(table_id);
+  const table = await service.read(table_id);
 
-    if (!table) {
-      return next({
-        status: 404,
-        message: `Table ${table_id} not found`
-      });
-    }
-
-    res.locals.table_id = table_id;
-    res.locals.table = table;
-    return next();
-  } catch(message) {
-    console.error(message);
+  if (!table) {
     return next({
-      status: 500,
-      message
+      status: 404,
+      message: `Table ${table_id} not found`
     });
   }
+
+  res.locals.table_id = table_id;
+  res.locals.table = table;
+  next();
 }
 
-async function tableIsFree(req, res, next) {
+function tableIsFree(req, res, next) {
   const { table } = res.locals;
 
   if (!table.free) {
@@ -110,10 +94,10 @@ async function tableIsFree(req, res, next) {
     });
   }
 
-  return next();
+  next();
 }
 
-async function tableHasCapacity(req, res, next) {
+function tableHasCapacity(req, res, next) {
   const { table, reservation } = res.locals;
 
   if (reservation.people > table.capacity) {
@@ -123,7 +107,7 @@ async function tableHasCapacity(req, res, next) {
     });
   }
 
-  return next();
+  next();
 }
 
 function validateTableName(req, res, next) {
@@ -136,7 +120,7 @@ function validateTableName(req, res, next) {
     });
   }
 
-  return next();
+  next();
 }
 
 
@@ -148,23 +132,16 @@ async function list(req, res) {
 }
 
 async function create(req, res, next) {
-  try {
-    const data = await service.create(res.locals.data);
-    res.status(201).json({ data });
-  } catch (message) {
-    console.error(message);
-    return next({
-      status: 500,
-      message
-    })
-  }
+  const data = await service.create(res.locals.data);
+  res.status(201).json({ data });
 }
 
-async function seat(req, res, next) {
+async function seat(req, res) {
   const { table_id, reservation_id } = res.locals;
   
-  const data = service.seat(table_id, reservation_id);
-  return res.sendStatus(200).json({ data });
+  const data = await service.seat(table_id, reservation_id);
+  console.log(data);
+  return res.status(200).json({ data });
 }
 
 module.exports = {
@@ -174,8 +151,8 @@ module.exports = {
     hasReservationId, 
     asyncErrorBoundary(reservationExists), 
     asyncErrorBoundary(tableExists), 
-    asyncErrorBoundary(tableIsFree),
-    asyncErrorBoundary(tableHasCapacity),
+    tableIsFree,
+    tableHasCapacity,
     asyncErrorBoundary(seat)
   ]
 }
