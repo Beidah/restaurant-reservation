@@ -67,6 +67,19 @@ async function reservationExists(req, res, next) {
   next();
 }
 
+function validateReservationStatus(req, res, next) {
+  const { reservation } = res.locals;
+
+  if (reservation.status === "seated") {
+    return next({
+      status: 400,
+      message: "Cannot seat an already seated table"
+    });
+  }
+
+  next();
+}
+
 async function tableExists(req, res, next) {
   const { table_id } = req.params;
 
@@ -169,6 +182,7 @@ module.exports = {
   seat: [
     hasReservationId, 
     asyncErrorBoundary(reservationExists), 
+    validateReservationStatus,
     asyncErrorBoundary(tableExists), 
     tableIsFree,
     tableHasCapacity,

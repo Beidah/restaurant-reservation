@@ -152,6 +152,19 @@ async function reservationExists(req, res, next) {
   return next();
 }
 
+function validatePostStatus(req, res, next) {
+  const { data: { status } } = res.locals;
+
+  if (status && status === "seated" || status === "finished") {
+    return next({
+      status: 400,
+      message: `Status '${status} is invalid`
+    });
+  }
+
+  next();
+}
+
 function validateStatus(req, res, next) {
   const { status } = req.body.data;
 
@@ -230,6 +243,6 @@ async function updateStatus(req, res, next) {
 module.exports = {
   list,
   read: [asyncErrorBoundary(reservationExists), read],
-  create: [hasProperties, verifyDate, validateDate, verifyTime, validateTime, verifyPeople, asyncErrorBoundary(create)],
+  create: [hasProperties, verifyDate, validateDate, verifyTime, validateTime, verifyPeople, validatePostStatus, asyncErrorBoundary(create)],
   updateStatus: [asyncErrorBoundary(reservationExists), validateStatus, checkFinished, asyncErrorBoundary(updateStatus)],
 };
