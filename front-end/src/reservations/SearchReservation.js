@@ -47,7 +47,7 @@ export default function SearchReservation() {
             required
           />
         </div>
-        <button onClick={onSubmit} className="btn btn-primary">Find</button>
+        <button type="submit" onClick={onSubmit} className="btn btn-primary">Find</button>
       </form>
       {resCards}
     </main>
