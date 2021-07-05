@@ -4,7 +4,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 // eslint-disable-next-line
 import { next, previous, today } from "../utils/date-time";
 import TableCard from "../table/TableCard";
-import ReservationCard from "../Reservations/ReservationCard";
+import ReservationCard from "../reservations/ReservationCard";
 
 /**
  * Defines the dashboard page.

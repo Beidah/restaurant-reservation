@@ -2,10 +2,11 @@ import React from "react";
 
 import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
-import NewReservation from "../Reservations/NewReservation";
+import NewReservation from "../reservations/NewReservation";
 import NotFound from "./NotFound";
 import NewTable from "../table/NewTable";
-import SeatReservation from "../Reservations/SeatReservation";
+import SeatReservation from "../reservations/SeatReservation";
+import SearchReservation from "../reservations/SearchReservation";
 
 /**
  * Defines all the routes for the application.
@@ -35,6 +36,9 @@ function Routes() {
       </Route>
       <Route exact={true} path="/tables/new">
         <NewTable />
+      </Route>
+      <Route exact={true} path="/search">
+        <SearchReservation />
       </Route>
       <Route>
         <NotFound />
