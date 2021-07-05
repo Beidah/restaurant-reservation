@@ -61,7 +61,7 @@ function NewTable() {
           value={formData.capacity}
         />
       </div>
-      <button type="submit" className="btn btn-primary mr-3">Submit</button>
+      <button type="submit" className="btn btn-primary mr-2">Submit</button>
       <button onClick={onCancel} className="btn btn-secondary">Cancel</button>
     </form>
   );

@@ -48,8 +48,8 @@ function Dashboard() {
           {reservationsComponents}
         </div>
         <div className="buttons mt-3">
-          <a className="btn btn-primary mr-3" href={`/dashboard?date=${previous(date)}`}>Previous</a>
-          <a className="btn btn-primary mr-3" href={`/dashboard?date=${next(date)}`}>Next</a>
+          <a className="btn btn-primary mr-2" href={`/dashboard?date=${previous(date)}`}>Previous</a>
+          <a className="btn btn-primary mr-2" href={`/dashboard?date=${next(date)}`}>Next</a>
           <a className="btn btn-primary" href={`/dashboard?date=${today()}`}>Today</a>
         </div>
         <h4>Tables</h4>

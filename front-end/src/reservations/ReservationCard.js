@@ -1,4 +1,5 @@
 import React from "react";
+import { updateReservationStatus } from "../utils/api";
 
 export default function ReservationCard({ reservation }) {
   let statusDisplay;
@@ -18,6 +19,14 @@ export default function ReservationCard({ reservation }) {
       break;
   }
 
+  const onCancel = () => {
+    if (window.confirm("Do you want to cancel this reservation? This cannot be undone.")) {
+      updateReservationStatus(reservation.reservation_id, "cancelled")
+        .then(() => window.location.reload())
+        .catch(console.error)
+    }
+  }
+
   return (
     <div className="reservation card">
       <div className="card-header">
@@ -33,8 +42,9 @@ export default function ReservationCard({ reservation }) {
         </p>
         {reservation.status === "booked" &&
           <>
-          <a className="btn btn-primary mr-3" href={`/reservations/${reservation.reservation_id}/seat`}>Seat</a>
-          <a className="btn btn-secondary" href={`/reservations/${reservation.reservation_id}/edit`}>Edit</a>
+          <a className="btn btn-primary mr-2" href={`/reservations/${reservation.reservation_id}/seat`}>Seat</a>
+          <a className="btn btn-secondary mr-2" href={`/reservations/${reservation.reservation_id}/edit`}>Edit</a>
+          <button className="btn btn-danger" data-reservation-id-cancel={reservation.reservation_id} onClick={onCancel}>Cancel</button>
           </>
         }
       </div>
