@@ -7,7 +7,7 @@ knex.migrate
   .latest()
   .then((migrations) => {
     console.log("migrations", migrations);
-    app.listen(PORT, listener);
+    app.listen(BACKEND_PORT, listener);
   })
   .catch((error) => {
     console.error(error);
@@ -15,5 +15,5 @@ knex.migrate
   });
 
 function listener() {
-  console.log(`Listening on Port ${PORT}!`);
+  console.log(`Listening on Port ${BACKEND_PORT}!`);
 }
