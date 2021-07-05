@@ -31,8 +31,11 @@ export default function ReservationCard({ reservation }) {
             {reservation.status}
           </span>
         </p>
-        {reservation.status === "booked" && 
-          <a className="btn btn-primary" href={`/reservations/${reservation.reservation_id}/seat`}>Seat</a>
+        {reservation.status === "booked" &&
+          <>
+          <a className="btn btn-primary mr-3" href={`/reservations/${reservation.reservation_id}/seat`}>Seat</a>
+          <a className="btn btn-secondary" href={`/reservations/${reservation.reservation_id}/edit`}>Edit</a>
+          </>
         }
       </div>
     </div>
