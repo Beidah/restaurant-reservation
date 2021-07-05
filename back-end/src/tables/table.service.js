@@ -20,7 +20,7 @@ async function create(newTable) {
   }
 }
 
-async function seat(table_id, reservation_id) {
+function seat(table_id, reservation_id) {
   return knex.transaction((trx) => { 
     return trx.table(tableName)
     .where({ table_id })

@@ -152,6 +152,42 @@ async function reservationExists(req, res, next) {
   return next();
 }
 
+function validateStatus(req, res, next) {
+  const { status } = req.body.data;
+
+  if (!status) {
+    return next({
+      status: 400,
+      message: "Missing property: status"
+    });
+  }
+
+  const validStatuses = ["booked", "seated", "finished", "cancelled"];
+
+  if (!validStatuses.includes(status)) {
+    return next({
+      status: 400,
+      message: `Invalid status property: ${status}`
+    });
+  }
+
+  res.locals.status = status;
+  next();
+}
+
+function checkFinished(req, res, next) {
+  const { reservation: { status } } = res.locals;
+
+  if (status === "finished") {
+    return next({
+      status: 400,
+      message: "A finished reservation cannot be updated"
+    });
+  }
+
+  next();
+}
+
 // Route handlers
 
 /**
@@ -185,8 +221,15 @@ function read(req, res) {
   res.json({data})
 }
 
+async function updateStatus(req, res, next) {
+  const { reservation: { reservation_id },  status } = res.locals;
+  const data = await service.updateStatus(reservation_id, status);
+  res.json({ data });
+}
+
 module.exports = {
   list,
   read: [asyncErrorBoundary(reservationExists), read],
   create: [hasProperties, verifyDate, validateDate, verifyTime, validateTime, verifyPeople, asyncErrorBoundary(create)],
+  updateStatus: [asyncErrorBoundary(reservationExists), validateStatus, checkFinished, asyncErrorBoundary(updateStatus)],
 };
