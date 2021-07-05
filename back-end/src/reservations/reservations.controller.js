@@ -1,32 +1,36 @@
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
+const { hasProperties } = require("../utils");
+
 
 // Middlewares
 
 const properties = ["first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people"];
 
-function hasProperties(req, res, next) {
-  const { data } = req.body;
+const hasCreatePropeties = hasProperties(properties);
 
-  if (!data) {
-    next({
-      status: 400,
-      message: "Missing data"
-    });
-  }
+// function hasProperties(req, res, next) {
+//   const { data } = req.body;
 
-  for (let propertery of properties) {
-    if (!data[propertery]) {
-      next({
-        status: 400,
-        message: `Missing property: ${propertery}`,
-      });
-    }
-  }
+//   if (!data) {
+//     next({
+//       status: 400,
+//       message: "Missing data"
+//     });
+//   }
 
-  res.locals.data = data;
-  return next();
-}
+//   for (let propertery of properties) {
+//     if (!data[propertery]) {
+//       next({
+//         status: 400,
+//         message: `Missing property: ${propertery}`,
+//       });
+//     }
+//   }
+
+//   res.locals.data = data;
+//   return next();
+// }
 
 function verifyDate(req, res, next) {
   const { reservation_date } = res.locals.data;
@@ -231,7 +235,7 @@ async function create(req, res, next) {
     console.error(error);
     next({
       status: 500,
-      message: error.error
+      message: error
     });
   }
 }
@@ -241,15 +245,22 @@ function read(req, res) {
   res.json({data})
 }
 
-async function updateStatus(req, res, next) {
+async function updateStatus(req, res) {
   const { reservation: { reservation_id },  status } = res.locals;
   const data = await service.updateStatus(reservation_id, status);
+  res.json({ data });
+}
+
+async function update(req, res, next) {
+  const reservation_id = res.locals.reservation.reservation_id;
+  const data = await service.update(reservation_id, res.locals.data);
   res.json({ data });
 }
 
 module.exports = {
   list,
   read: [asyncErrorBoundary(reservationExists), read],
-  create: [hasProperties, verifyDate, validateDate, verifyTime, validateTime, verifyPeople, validatePostStatus, asyncErrorBoundary(create)],
+  create: [hasCreatePropeties, verifyDate, validateDate, verifyTime, validateTime, verifyPeople, validatePostStatus, asyncErrorBoundary(create)],
+  update: [asyncErrorBoundary(reservationExists), hasCreatePropeties, verifyDate, validateDate, verifyTime, validateTime, verifyPeople, validatePostStatus, asyncErrorBoundary(update)],
   updateStatus: [asyncErrorBoundary(reservationExists), validateStatus, checkFinished, asyncErrorBoundary(updateStatus)],
 };

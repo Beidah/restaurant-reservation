@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Form, Col, Button, InputGroup } from "react-bootstrap";
 import { useHistory, useParams } from "react-router";
 import ErrorAlert from "../layout/ErrorAlert";
 import { createReservation, editReservation, getReservation } from "../utils/api";
@@ -86,7 +85,7 @@ export default function ReservationForm() {
 
           <div className="col" controlId="formFirstName">
             <label htmlFor="last_name">Last Name</label>
-            <Form.Control id="last_name" name="last_name" onChange={onChange} value={reservation.last_name} required />
+            <input className="form-control" id="last_name" name="last_name" onChange={onChange} value={reservation.last_name} required />
           </div>
         </div>
 

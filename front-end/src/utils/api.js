@@ -104,7 +104,7 @@ export async function editReservation(reservation, signal) {
 }
 
 export async function updateReservationStatus(resrvation_id, newStatus, signal) {
-  const url = new URL(`${API_BASE_URL}/reservation/${resrvation_id}/status`);
+  const url = new URL(`${API_BASE_URL}/reservations/${resrvation_id}/status`);
   const body = JSON.stringify({
     data: {
       status: newStatus

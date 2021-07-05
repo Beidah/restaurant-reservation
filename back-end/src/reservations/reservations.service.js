@@ -39,6 +39,13 @@ function create(newReservation) {
     .catch(console.error);
 }
 
+function update(reservation_id, reservation) {
+  return knex(tableName)
+    .where({ reservation_id })
+    .update(reservation, "*")
+    .then(updatedRecords => updatedRecords[0]);
+}
+
 function updateStatus(reservation_id, status) {
   return knex(tableName)
     .where({ reservation_id })
@@ -51,5 +58,6 @@ module.exports = {
   search,
   read,
   create,
+  update,
   updateStatus
 }
