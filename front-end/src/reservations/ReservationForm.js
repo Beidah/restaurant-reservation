@@ -53,11 +53,11 @@ export default function ReservationForm() {
     if (createMode) {
       createReservation(data, abortController.signal)
         .then(() => history.push(`/dashboard?date=${reservation.reservation_date}`))
-        .catch((error) => setError(error));
+        .catch(setError);
     } else if (!disabled) {
       editReservation(data, abortController.signal)
         .then(() => history.push(-1))
-        .catch((error) => setError(error));
+        .catch(setError);
     }
 
     return () => abortController.abort();

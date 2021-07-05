@@ -63,7 +63,7 @@ function SeatReservation() {
           {tableSelects}
         </select>
       </div>
-      <button onClick={onSubmit} className="btn btn-primary mr-2">Seat</button>
+      <button type="submit" onClick={onSubmit} className="btn btn-primary mr-2">Seat</button>
       <button onClick={onCancel} className="btn btn-secondary">Cancel</button>
     </form>
     </main>
