@@ -60,24 +60,24 @@ function verifyTime(req, res, next) {
 
 function validateDate(req, res, next) {
   const { reservation_date } = res.locals.data;
-  const date = new Date(reservation_date);
+  const resDate = new Date(reservation_date).toUTCString();
   const today = new Date();
 
-  if (date < today) {
+  if (reservation_date.slice(0, 4) < today.getFullYear()) {
     return next({
       status: 400,
       message: `Only future reservations dates are allowed.`
     });
   }
   
-  if (date.getDay() === 1) {
+  if (resDate.includes("Tue")) {
     return next({
       status: 400,
       message: `Cannot make a reservation for Tuesday because the restaurant is closed.`
     })
   }
 
-  return next();
+  next();
 }
 
 function validateTime(req, res, next) {
