@@ -207,8 +207,15 @@ function checkFinished(req, res, next) {
  * List handler for reservation resources
  */
 async function list(req, res, next) {
-  const date = req.query.date;
-  const data = await service.list(date);
+  const { mobile_number, date} = req.query;
+
+  let data;
+  if (mobile_number) {
+    data = await service.search(mobile_number);
+  } else {
+    data = await service.list(date);
+  }
+
     
   res.json({ data });
 }
