@@ -2,7 +2,7 @@ import React from "react";
 import { finishTable } from "../utils/api";
 
 function TableCard({ table, setError }) {
-  const status = table.free ? "Free" : "Occupied";
+  const status = !table.reservation_id ? "Free" : "Occupied";
 
   const onFinish = () => {
     if (window.confirm("Is this table ready to seat new guests? This cannot be undone.")) {
@@ -21,7 +21,7 @@ function TableCard({ table, setError }) {
         <p className="card-text">Capacity: {table.capacity}</p>
         <p className="card-text">
           Status: <span data-table-id-status={table.table_id}>{status}</span> 
-          {!table.free &&
+          {table.reservation_id &&
             <button className="btn btn-danger float-right" data-table-id-finish={table.table_id} onClick={onFinish}>
               Finish
             </button>

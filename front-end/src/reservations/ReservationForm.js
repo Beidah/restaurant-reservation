@@ -40,10 +40,24 @@ export default function ReservationForm() {
       ...reservation,
       [target.name]: target.value
     });
-
   }
 
-  const onSubmit = (e) => {
+  const update = async (data, abortController) => {
+    editReservation(data, abortController.signal)
+        .then(() => history.push(`/dashboard?date=${reservation.reservation_date}`))
+        .catch(setError);
+  }
+
+  const create = async (data, abortController) => {
+    try {
+      await createReservation(data, abortController.signal);
+      history.push(`/dashboard?date=${reservation.reservation_date}`)
+    } catch (message) {
+      setError(message);
+    }
+  }
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     const abortController = new AbortController();
 
@@ -51,26 +65,22 @@ export default function ReservationForm() {
     data.people = Number(data.people);
 
     if (createMode) {
-      createReservation(data, abortController.signal)
-        .then(() => history.push(`/dashboard?date=${reservation.reservation_date}`))
-        .catch(setError);
+      await create(data, abortController);
     } else if (!disabled) {
-      editReservation(data, abortController.signal)
-        .then(() => history.push(-1))
-        .catch(setError);
+      update(data, abortController);
     }
 
     return () => abortController.abort();
   }
 
   const onCancel = () => {
-    history.goBack();
+    history.push("/dashboard");
   }
 
   return (
     <>
     <ErrorAlert error={error} />
-      <form onSubmit={onSubmit}>
+      <form>
         <fieldset disabled={disabled}>
         {disabled && 
           <div className="alert alert-danger" role="alert">
@@ -157,7 +167,7 @@ export default function ReservationForm() {
         </fieldset>
         <div className="mt-3">
 
-          <button type="submit" className="btn btn-primary mr-2">Submit</button>
+          <button type="submit" className="btn btn-primary mr-2" onClick={onSubmit}>Submit</button>
           <button className="btn btn-secondary" onClick={onCancel}>Cancel</button>
         </div>
       </form>

@@ -26,7 +26,6 @@ function seat(table_id, reservation_id) {
     .where({ table_id })
     .update({
       reservation_id,
-      free: false,
     }, ["*"])
     .then((ids) => {
       return trx.table("reservations")
@@ -46,7 +45,6 @@ async function free(table_id) {
       .where({ table_id })
       .update({
         reservation_id: null,
-        free: true
       })
       .then(() => {
         return trx.table("reservations")

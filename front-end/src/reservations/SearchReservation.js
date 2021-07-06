@@ -22,7 +22,7 @@ export default function SearchReservation() {
   const onSubmit = (event) => {
     event.preventDefault();
 
-    listReservations({ mobile_phone: mobileNumber })
+    listReservations({ mobile_number: mobileNumber })
       .then(setReservations)
       .catch(setError);
   }

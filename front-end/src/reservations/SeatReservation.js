@@ -10,18 +10,31 @@ function SeatReservation() {
   const [tablesError, setTablesError] = useState(null);
   const [tableId, setTableId] = useState(undefined);
 
+  
+
   useEffect(() => {
     const abortController = new AbortController();
 
     listTables(abortController.signal)
       .then((res) => {
         setTables(res);
-        setTableId(res[0].table_id);
+        if (res.length > 0) {
+          setTableId(res[0].table_id);
+        }
+        
       })
       .catch(setTablesError);
-
-    return () => abortController.abort();
-  }, []);
+      
+      return () => abortController.abort();
+    }, []);
+    
+  console.log(tableId);
+  const tableSelects = tables
+    .filter(table => table.reservation_id === null)
+    .map((table, key) => {
+      return (
+        <option value={table.table_id} key={key}>{table.table_name} - {table.capacity}</option>
+      )});
 
   const onChange = (event) => {
     const id = Number(event.target.value);
@@ -44,14 +57,6 @@ function SeatReservation() {
   const onCancel = () => {
     history.push(-1);
   }
-
-  const tableSelects = tables
-    .filter(table => table.free)
-    .map((table, key) => {
-      return (
-        <option value={table.table_id} key={key}>{table.table_name} - {table.capacity}</option>
-      )
-    });
 
   return (
     <main>

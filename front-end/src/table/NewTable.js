@@ -11,7 +11,7 @@ function NewTable() {
   });
   const [error, setError] = useState(null);
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
 
     createTable(formData)
